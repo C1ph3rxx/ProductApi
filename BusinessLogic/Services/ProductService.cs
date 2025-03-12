@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.IServices;
+using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories;
 using Domain.Models;
 using System;
@@ -11,9 +12,9 @@ namespace BusinessLogicLayer.Services
 {
     public class ProductService : IProductService
     {
-        ProductRepository _productRepository;
+        IProduct _productRepository;
 
-        public ProductService(ProductRepository productRepository)
+        public ProductService(IProduct productRepository)
         {
             _productRepository = productRepository;
         }

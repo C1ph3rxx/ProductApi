@@ -12,7 +12,7 @@ namespace DataAccessLayer.Repositories
     public class CategoryRepository : ICategory
 
     {
-        private readonly ApplicationDbContext _applicationDbContext;
+         ApplicationDbContext _applicationDbContext;
 
         public CategoryRepository(ApplicationDbContext applicationDbContext)
         {
@@ -43,7 +43,9 @@ namespace DataAccessLayer.Repositories
 
         public Category Update(Category category)
         {
-            return _applicationDbContext.Categories.Update(category);
+            _applicationDbContext.Categories.Update(category);
+            _applicationDbContext.SaveChanges();
+            return category;
         }
     }
 }

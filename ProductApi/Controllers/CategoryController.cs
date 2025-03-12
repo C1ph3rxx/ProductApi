@@ -1,4 +1,7 @@
-﻿using BusinessLogicLayer.Services;
+﻿using AutoMapper;
+using BusinessLogicLayer.IServices;
+using BusinessLogicLayer.Services;
+using Domain.DTO;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -10,48 +13,59 @@ namespace ProductApi.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        CategoryService _categoryService;
-
-        public CategoryController (CategoryService categoryService)
+        ICategoryService _categoryService;
+        IMapper _mapper;
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
+        [HttpGet]
+        public IActionResult GetCategory()
+        {
 
+            return Ok(_mapper.Map<IList<GetCategoryDto>>(_categoryService.GetAllCategory()));
+        }
 
-
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            Category? category = _categoryService.GetCategory(id);
 
-            if(category == null)
+            Category? category = _categoryService.GetCategory(id, out string message);
+
+            if(category is null)
             {
-                return NotFound();
-
+                return NotFound(message);
             }
-            return Ok(category);
+            return Ok(_mapper.Map<GetCategoryDto>(category));
         }
 
-        [HttpPost]
-        public IActionResult CreateCategory(Category category)
+        [HttpPost("create")]
+        public IActionResult CreateCategory( [FromBody] CreateRequestCategoryDto category)
         {
-            Category? createdCategory = _categoryService.CreateCategory(category, out string messgae);
+            Category? createdCategory = _categoryService.CreateCategory(category, out string message);
 
-            if (createdCategory == null )
+            if (createdCategory is null )
             {
                 return BadRequest(message);
             }
 
+            //return Ok(createdCategory);
+            return Ok(_mapper.Map<CreateRequestCategoryDto>(category));
+
         }
 
-        [HttpPost]
-        public IActionResult UpdateCategory (Category category, out string message)
+        [HttpPost("update")]
+        public IActionResult UpdateCategory ([FromBody] Category category )
         {
-            if (string.IsNullOrWhiteSpace( category.Description))
+            Category? updatedCategory = _categoryService.UpdateCategory(category, out string message);
+         
+            if(updatedCategory is null )
             {
-                message = "Description is required";
-                retutn
+                return BadRequest(message);
             }
+            return Ok(updatedCategory);
         }
     }
 }

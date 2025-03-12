@@ -15,7 +15,7 @@ namespace BusinessLogicLayer.IServices
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Category? GetCategory(int id);
+        Category? GetCategory(int id, out string message );
 
         /// <summary>
         /// Returns all the Categories
@@ -34,14 +34,14 @@ namespace BusinessLogicLayer.IServices
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        Category? UpdateCategory(Category category);
+        Category? UpdateCategory(Category category, out string message);
 
         /// <summary>
         /// Creates a Category
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        Category? CreateCategory(Category category);
+        Category? CreateCategory(Category category, out string message);
     }
 }
 

@@ -1,5 +1,7 @@
 ﻿using BusinessLogicLayer.IServices;
+using DataAccessLayer.IRepositories;
 using DataAccessLayer.Repositories;
+using Domain.DTO;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -11,22 +13,29 @@ namespace BusinessLogicLayer.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly CategoryRepository _categoryRepository;
+        ICategory _categoryRepository;
 
-        public CategoryService(CategoryRepository categoryRepository)
+        public CategoryService(ICategory categoryRepository)
         {
-            this._categoryRepository = categoryRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public Category? CreateCategory(Category category)
+        public Category? CreateCategory(CreateRequestCategoryDto category, out string message)
         {
-            return _categoryRepository.Create(category);
+            Category newCategory = _categoryRepository.Create(category);
+            if (newCategory is null )
+            {
+                message = "Error creating category";
+                return null;
+            }
+            message = "Category created successfully";
+            return newCategory;
         }
 
         public bool DeleteCategory(int id)
         {
             Category? category = _categoryRepository.Get(id);
-            if(category == null)
+            if(category is  null)
             {
                 return false;
             }
@@ -39,22 +48,57 @@ namespace BusinessLogicLayer.Services
             return _categoryRepository.Get();
         }
 
-        public Category? GetCategory(int id)
+    
+        public Category? UpdateCategory(Category category , out string message)
         {
-            return _categoryRepository.Get(id);
-        }
 
-        public Category? UpdateCategory(Category category)
-        {
-            Category? existingCategory = _categoryRepository.Get(category.Id);
-
-            if(existingCategory == null )
+            if (string.IsNullOrWhiteSpace(category.Name))
             {
+                message = "invalid category name";
+            }
+
+            if ( String.IsNullOrWhiteSpace(category.Description))
+            {
+                message = "invalid category description";
+            }
+
+            Category? existingCategory = _categoryRepository.Get(category.Id);
+            
+            if(existingCategory is null )
+            {
+                message = "Category not found";
                 return null;
             }
 
-
+            message = "Category updated";
             return _categoryRepository.Update(category);
+        }
+
+        Category? ICategoryService.CreateCategory(Category category , out string message    )
+        {
+            throw new NotImplementedException();
+        }
+
+        Category? ICategoryService.GetCategory(int id, out string message)
+        {
+            if (id < 0)
+            {
+                message = "Category ID invalid";
+            }
+
+            Category? category = _categoryRepository.Get(id);
+            if(category is null )
+            {
+                message = "Invalid Category Id";
+                
+            }
+            message = "Get Category works";
+            return category;
+        }
+
+        Category? ICategoryService.UpdateCategory(Category category, out string message )
+        {
+            throw new NotImplementedException();
         }
     }
 }

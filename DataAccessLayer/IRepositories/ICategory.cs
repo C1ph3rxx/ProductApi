@@ -41,6 +41,6 @@ namespace DataAccessLayer.IRepositories
         /// <param name="category"></param>
         /// <returns></returns>
 
-        Category Update(Category category);
+        Category? Update(Category category);
     }
 }

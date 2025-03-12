@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Domain.DTO
 {
-    public class BaseModel
+    public class GetCategoryDto
     {
         public int Id { get; set; }
 
+        public string? Description { get; set; }
         public required string Name { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
